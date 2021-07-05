@@ -7,11 +7,13 @@
 
     drawStuff()
 
-    function initializeCaptionDimensions(caption) {
-        caption.x = 0
-        caption.y = IMAGE_HEIGHT * 0.7
-        caption.w = IMAGE_WIDTH
-        caption.h = 40
+    function modifyCaption(caption) {
+        return function updateCaptionDimensions(dimensions) {
+            caption.x = 0
+            caption.y = IMAGE_HEIGHT * 0.7
+            caption.w = IMAGE_WIDTH
+            caption.h = dimensions.h
+        }
     }
 
     function drawImage(img) {
@@ -23,18 +25,23 @@
         let caption = { x: 0, y: 0, w: 0, h: 0 }
 
         img.onload = function onImageLoad() {
-            initializeCaptionDimensions(caption, img)
+            let updateCaptionDimensions = modifyCaption(caption)
+            updateCaptionDimensions({ h: IMAGE_HEIGHT })
 
             drawImage(img)
 
-            ctx.fillStyle = '#00000095'
-
-            ctx.fillRect(caption.x, caption.y, caption.w, caption.h)
-            ctx.font = '18px Arial'
-            ctx.fillStyle = '#fff'
             let cap =
                 'I am elmo, and you are watching disney channel, only for kids.'
             let capWidth = ctx.measureText(cap).width
+
+            let numberOfLines = capWidth / IMAGE_WIDTH
+            updateCaptionDimensions({ h: 40 * numberOfLines })
+
+            ctx.fillStyle = '#00000095'
+            ctx.fillRect(caption.x, caption.y, caption.w, caption.h)
+
+            ctx.font = '18px Arial'
+            ctx.fillStyle = '#fff'
             ctx.fillText(
                 cap,
                 (caption.w - capWidth) / 2,
