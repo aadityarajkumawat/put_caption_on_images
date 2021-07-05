@@ -7,6 +7,30 @@
 
     drawStuff()
 
+    var textWidth = (function me(fontSizes, min, max) {
+        var index = Math.floor((min + max) / 2)
+
+        ctx.font = fontSizes[index] + 'px monospace'
+
+        var textWidth = ctx.measureText(
+            'hi this is aditya from india but',
+        ).width
+
+        console.log(textWidth)
+
+        return textWidth
+
+        // if (min > max) {
+        //     return textWidth
+        // }
+
+        // if (textWidth > canvas.width) {
+        //     return me(fontSizes, min, index - 1)
+        // } else {
+        //     return me(fontSizes, index + 1, max)
+        // }
+    })([16], 0, [16].length - 1)
+
     function modifyCaption(caption) {
         return function updateCaptionDimensions(_dimensions) {
             caption.x = 0
@@ -30,7 +54,7 @@
 
             drawImage(img)
 
-            let cap = `hi this is aditya from india but, hi this is aditya from india but, want to get this changed.`
+            let cap = `lorem ipsum, i have no idea what this means but still I will keep on writing this, I really wanted to get third line and finally I got it`
             let capWidth = ctx.measureText(cap).width
 
             /**
@@ -48,13 +72,10 @@
 
             let line = ''
             for (let word of words) {
-                // escape character
                 if (word === '$') {
                     lines.push(line)
                     line = word
                 }
-
-                // combine and push
                 if (line.length + word.length <= 35) {
                     line += word
                 } else {
@@ -66,23 +87,23 @@
             console.log(lines)
 
             for (let [idx, line] of lines.entries()) {
-                // console.log('ran')
-                // ctx.fillStyle = '#00000095'
-                // ctx.fillRect(
-                //     caption.x,
-                //     caption.y + 30 * idx,
-                //     caption.w,
-                //     caption.h,
-                // )
+                console.log('ran')
+                ctx.fillStyle = '#00000095'
+                ctx.fillRect(
+                    caption.x,
+                    caption.y + 30 * idx,
+                    caption.w,
+                    caption.h,
+                )
 
-                let lineWidth = widthOfACharacter * line.length
+                let lineWidth = ctx.measureText(line).width
                 console.log({ captionWidth: caption.w, lineWidth, line })
 
                 ctx.font = '16px monospace'
                 ctx.fillStyle = '#fff'
                 ctx.fillText(
                     line,
-                    caption.w - lineWidth,
+                    (caption.w - lineWidth) / 2,
                     13 + caption.y + (caption.h - 13) / 2 + 30 * idx,
                 )
             }
