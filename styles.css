@@ -19,3 +19,11 @@ body {
 .pre {
     display: none;
 }
+
+.can {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 940px;
+}

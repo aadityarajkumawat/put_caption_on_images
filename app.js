@@ -1,4 +1,6 @@
 let canvas = document.getElementById('canvas')
+canvas.width = 900
+canvas.height = 900
 let ctx = canvas.getContext('2d')
 let input = document.querySelector('input[type=file]')
 let reader = new FileReader()
@@ -7,9 +9,13 @@ const ESCAPE_CHAR = '$'
 const IMAGE_HEIGHT = 821
 const IMAGE_WIDTH = 409
 let prev = ''
+let captions = [
+    'When teacher keeps giving you assignments, but are too busy playing valorant',
+    'I am fine, everything is fine',
+]
 
 function modifyCaption(caption) {
-    return function updateCaptionDimensions(_dimensions) {
+    return function updateCaptionDimensions() {
         caption.x = 0
         caption.y = IMAGE_HEIGHT * 0.7
         caption.w = IMAGE_WIDTH
@@ -18,7 +24,10 @@ function modifyCaption(caption) {
 }
 
 function drawImage(img) {
-    ctx.drawImage(img, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT)
+    canvas.width = img.width
+    canvas.height = img.height
+    ctx.clearRect(0, 0, img.width, img.height)
+    ctx.drawImage(img, 0, 0, img.width, img.height)
 }
 
 function addWhiteSpace(word) {
@@ -29,7 +38,7 @@ function onImageLoad(img, caption) {
     let updateCaptionDimensions = modifyCaption(caption)
     updateCaptionDimensions()
     drawImage(img)
-    let cap = `when teacher keeps giving you assignments, but are too busy playing valorant`
+    let cap = captions[parseInt(Math.random() * captions.length)]
     let words = cap.split(' ')
     words = words.map(addWhiteSpace)
     words.push(ESCAPE_CHAR)
@@ -69,13 +78,14 @@ function drawStuff() {
 }
 
 function main() {
-    input.addEventListener('change', () => {
+    input.addEventListener('change', getLocalURLAndRenderImage)
+    function getLocalURLAndRenderImage() {
         reader.readAsDataURL(input.files[0])
         reader.onloadend = function () {
             prev = reader.result
             drawStuff()
         }
-    })
+    }
 }
 
 main()
